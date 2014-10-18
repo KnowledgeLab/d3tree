@@ -73,8 +73,8 @@ function update(source) {
       .attr("y", -barHeight / 2)
       .attr("height", barHeight)
       .attr("width", barWidth)
-      .style("fill", color)
-      .on("click", click);
+      .style("fill", getNodeColor)
+      .on("click", toggleChildren);
 
   nodeEnter.append("text")
       .attr("dy", 3.5)
@@ -92,7 +92,7 @@ function update(source) {
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
       .style("opacity", 1)
     .select("rect")
-      .style("fill", color);
+      .style("fill", getNodeColor);
 
   // Transition exiting nodes to the parent's new position.
   node.exit().transition()
@@ -137,8 +137,7 @@ function update(source) {
   });
 }
 
-// Toggle children on click.
-function click(d) {
+function toggleChildren(d) {
   if (d.children) {
     d._children = d.children;
     d.children = null;
@@ -149,7 +148,8 @@ function click(d) {
   update(d);
 }
 
-function color(d) {
+
+function getNodeColor(d) {
   //return d._children ? "#ff0000" : d.children ? "#00ff00" : "#0000ff";
   return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
 }
