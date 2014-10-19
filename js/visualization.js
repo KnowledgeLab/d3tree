@@ -10,8 +10,9 @@ var i         = 0;
 var duration  = 400;
 var root;
 
-var tree = d3.layout.tree()
-    .nodeSize([0, 20]);
+var displayTree = new d3Tree();
+var tree = displayTree.tree;
+// displayTree.loadFile(treeFile);
 
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
@@ -34,14 +35,13 @@ d3.json(treeFile, function(error, data) {
   data.y0 = 0;
   update(root = data);
 
-  treeCollapseAll(tree);
-  
+  treeCollapseAll(displayTree.tree);
 });
 
 function update(source) {
 
   // Compute the flattened node list. TODO use d3.layout.hierarchy.
-  var nodes = tree.nodes(root);
+  var nodes = displayTree.tree.nodes(root);
 
   var height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
 
