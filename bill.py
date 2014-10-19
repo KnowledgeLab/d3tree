@@ -10,20 +10,20 @@ topics  = []
 redness = []
 ci      = []
 std     = []
-deep    = []
+depths  = []
 
 def traverse(node, depth):
     if T.vs[node]['kb']+T.vs[node]['kr']==0:  # if this node does have the data
         return
 
     topics.append(T.vs[node]['label']+(depth-1)*'..')
-    deep.append(depth)
+    depths.append(depth)
     redness.append(T.vs[node]['color'][0])
     ci.append(T.vs[node]['color'][0]-T.vs[node]['ci'][0])
     std.append(T.vs[node]['std'])
     
-    for u in T.neighbors(node,OUT):
-        traverse(u,depth+1)
+    for u in T.neighbors(node, OUT):
+        traverse(u, depth+1)
 
 traverse(0, 0)
 
@@ -41,7 +41,7 @@ plt.plot([0.7685359659184008, 0.7685359659184008],
          [0, len(x)-1], 'k--')
 
 for i in xrange(len(x)):
-    if deep[i]==1:
+    if depths[i]==1:
         plt.text(0, i, topics[i], ha='right',
                  va='center', weight='bold', fontsize=10)
     else:

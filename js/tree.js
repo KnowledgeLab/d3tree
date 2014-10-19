@@ -1,11 +1,14 @@
-var margin = {top: 30, right: 20, bottom: 30, left: 20},
-    width = 960 - margin.left - margin.right,
-    barHeight = 20,
-    barWidth = width * .8;
+const treeFile = "tree1.json";
+const entryPointSelector = "body";
 
-var i = 0,
-    duration = 400,
-    root;
+var margin    = {top: 30, right: 20, bottom: 30, left: 20};
+var width     = 960 - margin.left - margin.right;
+var barHeight = 20;
+var barWidth  = width * 0.8;
+
+var i         = 0;
+var duration  = 400;
+var root;
 
 var tree = d3.layout.tree()
     .nodeSize([0, 20]);
@@ -13,29 +16,21 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
+var svg = d3.select(entryPointSelector).append("svg")
+  .attr("width", width + margin.left + margin.right)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-//d3.json("flare.json", function(error, flare) {
-d3.json("tree1.json", function(error, flare) {
-  flare.x0 = 0;
-  flare.y0 = 0;
-  update(root = flare);
+d3.json(treeFile, function(error, data) {
+  data.x0 = 0;
+  data.y0 = 0;
+  update(root = data);
   
   // collapse all the nodes initially
-	tree.nodes(root).forEach
-	(
-		function(d) 
-		{
-			if (d.children) 
-			{
-				d._children = d.children;
-				d.children = null;
-			}
-		}
-	);
+	tree.nodes(root).forEach(
+		function(d) {
+      childrenOff(d);
+		});
 	update(root);
 });
 
@@ -97,38 +92,40 @@ function update(source) {
   // Transition exiting nodes to the parent's new position.
   node.exit().transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
-      .style("opacity", 1e-6)
-      .remove();
+    .attr("transform", function(d) {
+      return "translate(" + source.y + "," + source.x + ")";
+    })
+    .style("opacity", 1e-6)
+    .remove();
 
   // Update the links…
   var link = svg.selectAll("path.link")
-      .data(tree.links(nodes), function(d) { return d.target.id; });
+    .data(tree.links(nodes), function(d) { return d.target.id; });
 
   // Enter any new links at the parent's previous position.
   link.enter().insert("path", "g")
-      .attr("class", "link")
-      .attr("d", function(d) {
-        var o = {x: source.x0, y: source.y0};
-        return diagonal({source: o, target: o});
-      })
+    .attr("class", "link")
+    .attr("d", function(d) {
+      var o = {x: source.x0, y: source.y0};
+      return diagonal({source: o, target: o});
+    })
     .transition()
-      .duration(duration)
-      .attr("d", diagonal);
+    .duration(duration)
+    .attr("d", diagonal);
 
   // Transition links to their new position.
   link.transition()
-      .duration(duration)
-      .attr("d", diagonal);
+    .duration(duration)
+    .attr("d", diagonal);
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
-      .duration(duration)
-      .attr("d", function(d) {
-        var o = {x: source.x, y: source.y};
-        return diagonal({source: o, target: o});
-      })
-      .remove();
+    .duration(duration)
+    .attr("d", function(d) {
+      var o = {x: source.x, y: source.y};
+      return diagonal({source: o, target: o});
+    })
+    .remove();
 
   // Stash the old positions for transition.
   nodes.forEach(function(d) {
@@ -139,17 +136,25 @@ function update(source) {
 
 function toggleChildren(d) {
   if (d.children) {
-    d._children = d.children;
-    d.children = null;
+    childrenOff(d);
   } else {
-    d.children = d._children;
-    d._children = null;
+    childrenOn(d);
   }
+
   update(d);
+}
+
+function childrenOff(d) {
+  d._children = d.children;
+  d.children = null;
+}
+
+function childrenOn(d) {
+  d.children = d._children;
+  d._children = null;
 }
 
 
 function getNodeColor(d) {
-  //return d._children ? "#ff0000" : d.children ? "#00ff00" : "#0000ff";
   return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
 }
