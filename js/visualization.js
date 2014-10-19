@@ -8,7 +8,6 @@ var barWidth  = width * 0.8;
 
 var i         = 0;
 var duration  = 400;
-var root;
 
 var displayTree = new d3Tree();
 var tree = displayTree.tree;

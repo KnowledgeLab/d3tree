@@ -20,10 +20,6 @@ function d3Tree (initFile) {
     this.root = val;
   };
 
-  this.getRoot = function () {
-    return this.root;
-  }
-
 
   this.collapseAll = function () {
     this.tree.nodes(this.root).forEach(function (node) {
@@ -31,7 +27,7 @@ function d3Tree (initFile) {
       node.children = null;
     });
 
-    this.update(this.getRoot());
+    this.update(this.root);
   };
 
   this.loadFile = function (jsonFilename) {
@@ -42,7 +38,7 @@ function d3Tree (initFile) {
 
       _this.setRoot(data);
 
-      _this.update(_this.getRoot());
+      _this.update(_this.root);
 
       _this.collapseAll();
     });
