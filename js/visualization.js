@@ -13,11 +13,11 @@ displayTree.insertInto(entryPointSelector);
 
 function canvasHeightAdjust (newHeight) {
   displayTree.svgMain.transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
   .attr("height", newHeight);
 
   d3.select(window.frameElement).transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .style("height", newHeight + "px");
 }
 
@@ -56,12 +56,12 @@ function update(source) {
 
   // Transition nodes to their new position.
   nodeEnter.transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
     .style("opacity", 1);
 
   node.transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
     .style("opacity", 1)
     .select("rect")
@@ -69,7 +69,7 @@ function update(source) {
 
   // Transition exiting nodes to the parent's new position.
   node.exit().transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("transform", function (d) {
       return "translate(" + source.y + "," + source.x + ")";
     })
@@ -89,17 +89,17 @@ function update(source) {
       return d3Tree.diagonal({source: o, target: o});
     })
     .transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("d", d3Tree.diagonal);
 
   // Transition links to their new position.
   link.transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("d", d3Tree.diagonal);
 
   // Transition exiting nodes to the parent's new position.
   link.exit().transition()
-    .duration(d3Tree.duration)
+    .duration(d3Tree.transitionDuration)
     .attr("d", function (d) {
       var o = {x: source.x, y: source.y};
       return d3Tree.diagonal({source: o, target: o});
