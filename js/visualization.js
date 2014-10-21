@@ -25,7 +25,7 @@ function update(source) {
   // Compute the flattened node list. TODO use d3.layout.hierarchy.
   var nodes     = displayTree.getNodes();
 
-  var newHeight = nodes.length * d3Tree.barHeight + d3Tree.margin.top + d3Tree.margin.bottom;
+  var newHeight = nodes.length * d3Tree.barHeight + Canvas.margin.top + Canvas.margin.bottom;
   canvasHeightAdjust(newHeight);
 
   displayTree.positionNodes();

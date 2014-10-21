@@ -1,6 +1,5 @@
 d3Tree.duration  = 400;
-d3Tree.margin    = {top: 30, right: 20, bottom: 30, left: 20};
-d3Tree.width     = 960 - d3Tree.margin.left - d3Tree.margin.right;
+d3Tree.width     = 960 - Canvas.margin.left - Canvas.margin.right;
 d3Tree.barHeight = 20;
 d3Tree.barWidth  = d3Tree.width * 0.8;
 
@@ -60,9 +59,9 @@ function d3Tree(initFile) {
 
   this.insertInto = function (entryPointSelector) {
     this.svg = this.svgMain
-      .attr("width", d3Tree.width + d3Tree.margin.left + d3Tree.margin.right)
+      .attr("width", d3Tree.width + Canvas.margin.left + Canvas.margin.right)
       .append("g")
-      .attr("transform", "translate(" + d3Tree.margin.left + "," + d3Tree.margin.top + ")");
+      .attr("transform", "translate(" + Canvas.margin.left + "," + Canvas.margin.top + ")");
   };
 
   this.positionNodes = function () {
