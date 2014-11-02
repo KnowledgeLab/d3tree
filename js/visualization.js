@@ -1,35 +1,39 @@
-// TODO: add "collapse all" button
-
 "use strict";
-var treeFile, entryPointSelector, i, displayTree;
 
-var treeFile           = "tree1.json";
+var treeFile = "tree1.json";
 var entryPointSelector = "body";
-var i                  = 0;
 
-var displayTree        = new d3Tree(treeFile);
+var i         = 0;
+var displayTree = new d3Tree(treeFile);
 
 displayTree.insertInto(entryPointSelector);
 
-function canvasHeightAdjust (newHeight) {
-  displayTree.svgMain.transition()
-    .duration(d3Tree.duration)
-  .attr("height", newHeight);
+function heightAdjust () {
+  var nodes = displayTree.getNodes();
+  var height = Math.max(500, nodes.length * d3Tree.barHeight + d3Tree.margin.top + d3Tree.margin.bottom);
 
-  d3.select(window.frameElement).transition()
+  d3.select("svg").transition()
     .duration(d3Tree.duration)
-    .style("height", newHeight + "px");
+    .attr("height", height);
+
+  d3.select(self.frameElement).transition()
+    .duration(d3Tree.duration)
+    .style("height", height + "px");
 }
 
 function update(source) {
   // Compute the flattened node list. TODO use d3.layout.hierarchy.
-  var nodes     = displayTree.getNodes();
+  var nodes = displayTree.getNodes();
 
-  var newHeight = nodes.length * d3Tree.barHeight + d3Tree.margin.top + d3Tree.margin.bottom;
-  canvasHeightAdjust(newHeight);
+  var height = Math.max(500, nodes.length * d3Tree.barHeight + d3Tree.margin.top + d3Tree.margin.bottom);
 
-  displayTree.positionNodes();
+  heightAdjust();
   
+  // Compute the "layout".
+  nodes.forEach(function (n, i) {
+    n.x = i * d3Tree.barHeight;
+  });
+
   // Update the nodes…
   var node = displayTree.svg.selectAll("g.node")
     .data(nodes, function (d) { return d.id || (d.id = ++i); });
@@ -77,12 +81,12 @@ function update(source) {
     .remove();
 
   // Update the links…
-  var link = displayTree.getAllLinks()
+  var link = displayTree.svg.selectAll("path.link")
     .data(displayTree.tree.links(displayTree.getNodes()), function (d) { return d.target.id; });
 
+
   // Enter any new links at the parent's previous position.
-  link.enter()
-    .insert("path", "g")
+  link.enter().insert("path", "g")
     .attr("class", "link")
     .attr("d", function (d) {
       var o = {x: source.x0, y: source.y0};
