@@ -7,8 +7,11 @@ var barHeight = 20;
 var barWidth  = width * 0.8;
 
 var i         = 0;
+var duration  = 400;
 
-var displayTree = new d3Tree(treeFile);
+var displayTree = new d3Tree();
+var tree = displayTree.tree;
+displayTree.loadFile(treeFile);
 
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });

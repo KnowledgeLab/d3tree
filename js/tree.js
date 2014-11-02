@@ -1,5 +1,4 @@
-function d3Tree(initFile) {
-  "use strict";
+function d3Tree (initFile) {
   var margin    = {top: 30, right: 20, bottom: 30, left: 20};
   var width     = 960 - margin.left - margin.right;
   var barHeight = 20;
@@ -7,7 +6,7 @@ function d3Tree(initFile) {
 
   var root;
   var tree;
-
+  
   var i         = 0;
   var duration  = 400;
 
@@ -33,7 +32,7 @@ function d3Tree(initFile) {
 
   this.loadFile = function (jsonFilename) {
     var _this = this;
-    d3.json(jsonFilename, function (error, data) {
+    d3.json(jsonFilename, function(error, data) {
       data.x0 = 0;
       data.y0 = 0;
 
@@ -45,11 +44,9 @@ function d3Tree(initFile) {
     });
   };
 
-  this.init = function (jsonFilename) {
+  this.init = function () {
     this.tree = d3.layout.tree().
       nodeSize([0, 20]);
-
-    this.loadFile(jsonFilename);
   };
 
   this.insertInto = function (entryPointSelector) {
@@ -58,7 +55,7 @@ function d3Tree(initFile) {
       .attr("width", width + margin.left + margin.right)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  };
+  }
 
   this.update = function (source) {
     // Compute the flattened node list. TODO use d3.layout.hierarchy.
@@ -75,17 +72,17 @@ function d3Tree(initFile) {
       .style("height", height + "px");
 
     // Compute the "layout".
-    nodes.forEach(function (n, i) {
+    nodes.forEach(function(n, i) {
       n.x = i * barHeight;
     });
 
     // Update the nodes…
     var node = this.svg.selectAll("g.node")
-      .data(nodes, function (d) { return d.id || (d.id = ++i); });
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
 
     var nodeEnter = node.enter().append("g")
       .attr("class", "node")
-      .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+      .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
       .style("opacity", 1e-6);
 
     // Enter any new nodes at the parent's previous position.
@@ -99,17 +96,17 @@ function d3Tree(initFile) {
     nodeEnter.append("text")
       .attr("dy", 3.5)
       .attr("dx", 5.5)
-      .text(function (d) { return d.name; });
+      .text(function(d) { return d.name; });
 
     // Transition nodes to their new position.
     nodeEnter.transition()
       .duration(duration)
-      .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
       .style("opacity", 1);
 
     node.transition()
       .duration(duration)
-      .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
       .style("opacity", 1)
       .select("rect")
       .style("fill", this.getNodeColor);
@@ -117,7 +114,7 @@ function d3Tree(initFile) {
     // Transition exiting nodes to the parent's new position.
     node.exit().transition()
       .duration(duration)
-      .attr("transform", function (d) {
+      .attr("transform", function(d) {
         return "translate(" + source.y + "," + source.x + ")";
       })
       .style("opacity", 1e-6)
@@ -125,13 +122,13 @@ function d3Tree(initFile) {
 
     // Update the links…
     var link = this.svg.selectAll("path.link")
-      .data(this.tree.links(this.getNodes()), function (d) { return d.target.id; });
+      .data(this.tree.links(this.getNodes()), function(d) { return d.target.id; });
 
 
     // Enter any new links at the parent's previous position.
     link.enter().insert("path", "g")
       .attr("class", "link")
-      .attr("d", function (d) {
+      .attr("d", function(d) {
         var o = {x: source.x0, y: source.y0};
         return diagonal({source: o, target: o});
       })
@@ -147,18 +144,18 @@ function d3Tree(initFile) {
     // Transition exiting nodes to the parent's new position.
     link.exit().transition()
       .duration(duration)
-      .attr("d", function (d) {
+      .attr("d", function(d) {
         var o = {x: source.x, y: source.y};
         return diagonal({source: o, target: o});
       })
       .remove();
 
     // Stash the old positions for transition.
-    nodes.forEach(function (d) {
+    nodes.forEach(function(d) {
       d.x0 = d.x;
       d.y0 = d.y;
     });
-  };
+  }
 
   this.toggleChildren = function (d) {
     if (d.children) {
@@ -169,12 +166,14 @@ function d3Tree(initFile) {
       d._children = null;
     }
 
+    console.log(d);
+
     this.update(d);
-  };
+  }
 
   this.getNodeColor = function (d) {
     return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
-  };
+  }
 
-  this.init(initFile);
+  this.init();
 }
