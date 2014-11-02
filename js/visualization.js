@@ -3,7 +3,7 @@
 "use strict";
 var treeFile, entryPointSelector, i, displayTree;
 
-var treeFile           = "amazon_tree.json";
+var treeFile           = "tree1.json";
 var entryPointSelector = "body";
 var i                  = 0;
 
