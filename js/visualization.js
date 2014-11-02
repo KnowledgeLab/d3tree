@@ -1,4 +1,4 @@
-const treeFile = "tree1.json";
+const treeFile = "amazon_tree.json";
 const entryPointSelector = "body";
 
 var margin    = {top: 30, right: 20, bottom: 30, left: 20};
