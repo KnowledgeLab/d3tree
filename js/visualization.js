@@ -32,6 +32,10 @@
     update(root);
   }
 
+  var errorPlotAxisStart = 400;
+  var errorPlotAxisEnd = 700;
+  var errorPlotAxisLen = errorPlotAxisEnd - errorPlotAxisStart;
+
   d3.json(treeFile, function(error, data) {
     data.x0 = 0;
     data.y0 = 0;
@@ -89,11 +93,11 @@
     // FIXME: DRY out
     dotErrorPlot.append("line")
       .attr("x1", function (d) {
-        return d.index === "NA" || d.ci === "NA" ? 0 : 400;
+        return d.index === "NA" || d.ci === "NA" ? 0 : errorPlotAxisStart;
       })
       .attr("y1", 0)
       .attr("x2", function (d) {
-        return d.index === "NA" || d.ci === "NA" ? 0 : 700;
+        return d.index === "NA" || d.ci === "NA" ? 0 : errorPlotAxisEnd;
       })
       .attr("y2", 0)
       .attr("stroke", "black")
@@ -103,12 +107,20 @@
       .attr("class", "ci")
       .attr("x1", function (d) {
         if (d.index === "NA" || d.ci === "NA") return 0;
-        else return (d.index * 300 + 400) - 300*d.ci;
+        else {
+          var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
+
+          return errorPlotPoint - errorPlotAxisLen*d.ci; 
+        }
       })
       .attr("y1", 0)
       .attr("x2", function (d) {
         if (d.index === "NA" || d.ci === "NA") return 0;
-        else return (d.index * 300 + 400) + 300*d.ci;
+        else {
+          var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
+
+          return errorPlotPoint + errorPlotAxisLen*d.ci; 
+        }
       })
       .attr("y2", 0)
       .attr("stroke", "pink")       // TODO: make dynamic
@@ -118,7 +130,7 @@
     dotErrorPlot.append("circle")
       .attr("cx", function (d) {
         if (d.index === "NA" || d.ci === "NA") return 0;
-        else return d.index * 300 + 400;
+        else return d.index * errorPlotAxisLen + errorPlotAxisStart;
       })
       .attr("cy", 0)
       .attr("r", function (d) {
