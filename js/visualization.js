@@ -33,8 +33,8 @@
   }
 
   var errorPlotAxisStart = 400;
-  var errorPlotAxisEnd = 700;
-  var errorPlotAxisLen = errorPlotAxisEnd - errorPlotAxisStart;
+  var errorPlotAxisEnd   = 700;
+  var errorPlotAxisLen   = errorPlotAxisEnd - errorPlotAxisStart;
 
   d3.json(treeFile, function(error, data) {
     data.x0 = 0;
@@ -90,7 +90,6 @@
       .attr("class", "dot-error-plot");
 
     // FIXME: clean up "do not draw" behavior
-    // FIXME: DRY out
     dotErrorPlot.append("line")
       .attr("x1", function (d) {
         return d.index === "NA" || d.ci === "NA" ? 0 : errorPlotAxisStart;
@@ -110,7 +109,8 @@
         else {
           var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
 
-          return errorPlotPoint - errorPlotAxisLen*d.ci; 
+          return Math.max(errorPlotPoint - errorPlotAxisLen * d.ci,
+                         errorPlotAxisStart);
         }
       })
       .attr("y1", 0)
@@ -119,13 +119,13 @@
         else {
           var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
 
-          return errorPlotPoint + errorPlotAxisLen*d.ci; 
+          return Math.min(errorPlotPoint + errorPlotAxisLen * d.ci,
+                         errorPlotAxisEnd);
         }
       })
       .attr("y2", 0)
       .attr("stroke", "pink")       // TODO: make dynamic
-      .attr("stroke-width", "0.5"); 
-    // TODO: cut off line if extends past axis boundaries
+      .attr("stroke-width", "0.5");
 
     dotErrorPlot.append("circle")
       .attr("cx", function (d) {
@@ -141,12 +141,16 @@
     // Transition nodes to their new position.
     nodeEnter.transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      })
       .style("opacity", 1);
 
     node.transition()
       .duration(duration)
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .attr("transform", function(d) {
+        return "translate(" + d.y + "," + d.x + ")";
+      })
       .style("opacity", 1)
       .select("rect")
       .style("fill", getNodeColor);
