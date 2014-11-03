@@ -85,6 +85,8 @@
     var dotErrorPlot = nodeEnter.append("g")
       .attr("class", "dot-error-plot");
 
+    // FIXME: clean up "do not draw" behavior
+    // FIXME: DRY out
     dotErrorPlot.append("line")
       .attr("x1", function (d) {
         return d.index === "NA" || d.ci === "NA" ? 0 : 400;
@@ -97,10 +99,31 @@
       .attr("stroke", "black")
       .attr("stroke-width", "1");
 
+    dotErrorPlot.append("line")
+      .attr("class", "ci")
+      .attr("x1", function (d) {
+        if (d.index === "NA" || d.ci === "NA") return 0;
+        else return (d.index * 300 + 400) - 300*d.ci;
+      })
+      .attr("y1", 0)
+      .attr("x2", function (d) {
+        if (d.index === "NA" || d.ci === "NA") return 0;
+        else return (d.index * 300 + 400) + 300*d.ci;
+      })
+      .attr("y2", 0)
+      .attr("stroke", "pink")       // TODO: make dynamic
+      .attr("stroke-width", "0.5"); 
+    // TODO: cut off line if extends past axis boundaries
+
     dotErrorPlot.append("circle")
-      .attr("cx", 500)          // TODO: make dynamic
+      .attr("cx", function (d) {
+        if (d.index === "NA" || d.ci === "NA") return 0;
+        else return d.index * 300 + 400;
+      })
       .attr("cy", 0)
-      .attr("r", 5)
+      .attr("r", function (d) {
+        return d.index === "NA" || d.ci === "NA" ? 0 : 5;
+      })
       .attr("fill", "purple");  // TODO: make dynamic
 
     // Transition nodes to their new position.
