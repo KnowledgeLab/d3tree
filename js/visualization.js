@@ -15,7 +15,6 @@
 
   var displayTree = new d3Tree();
   var tree = displayTree.tree;
-  // displayTree.loadFile(treeFile);
 
   var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
@@ -83,14 +82,26 @@
       .attr("dx", 5.5)
       .text(function(d) { return d.name; });
 
-    // dot-error plotting
-    nodeEnter.append("line")
-      .attr("x1", 500)
+    var dotErrorPlot = nodeEnter.append("g")
+      .attr("class", "dot-error-plot");
+
+    dotErrorPlot.append("line")
+      .attr("x1", function (d) {
+        return d.index === "NA" || d.ci === "NA" ? 0 : 400;
+      })
       .attr("y1", 0)
-      .attr("x2", 400)
+      .attr("x2", function (d) {
+        return d.index === "NA" || d.ci === "NA" ? 0 : 700;
+      })
       .attr("y2", 0)
       .attr("stroke", "black")
       .attr("stroke-width", "1");
+
+    dotErrorPlot.append("circle")
+      .attr("cx", 500)          // TODO: make dynamic
+      .attr("cy", 0)
+      .attr("r", 5)
+      .attr("fill", "purple");  // TODO: make dynamic
 
     // Transition nodes to their new position.
     nodeEnter.transition()
