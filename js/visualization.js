@@ -99,33 +99,31 @@
         return d.index === "NA" || d.ci === "NA" ? 0 : errorPlotAxisEnd;
       })
       .attr("y2", 0)
-      .attr("stroke", "black")
-      .attr("stroke-width", "1");
+      .attr("stroke", "gray")
+      .attr("stroke-width", "1.5");
 
     dotErrorPlot.append("line")
       .attr("class", "ci")
       .attr("x1", function (d) {
         if (d.index === "NA" || d.ci === "NA") return 0;
-        else {
-          var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
 
-          return Math.max(errorPlotPoint - errorPlotAxisLen * d.ci,
-                         errorPlotAxisStart);
-        }
+        var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
+
+        return Math.max(errorPlotPoint - errorPlotAxisLen * d.ci,
+                        errorPlotAxisStart);
       })
       .attr("y1", 0)
       .attr("x2", function (d) {
         if (d.index === "NA" || d.ci === "NA") return 0;
-        else {
-          var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
 
-          return Math.min(errorPlotPoint + errorPlotAxisLen * d.ci,
-                         errorPlotAxisEnd);
-        }
+        var errorPlotPoint = (d.index * errorPlotAxisLen + errorPlotAxisStart);
+
+        return Math.min(errorPlotPoint + errorPlotAxisLen * d.ci,
+                        errorPlotAxisEnd);
       })
       .attr("y2", 0)
-      .attr("stroke", "pink")       // TODO: make dynamic
-      .attr("stroke-width", "0.5");
+      .attr("stroke", "crimson")       // TODO: make dynamic
+      .attr("stroke-width", "1.5");
 
     dotErrorPlot.append("circle")
       .attr("cx", function (d) {
@@ -136,7 +134,7 @@
       .attr("r", function (d) {
         return d.index === "NA" || d.ci === "NA" ? 0 : 5;
       })
-      .attr("fill", "purple");  // TODO: make dynamic
+      .attr("fill", "rebeccapurple");  // TODO: make dynamic
 
     // Transition nodes to their new position.
     nodeEnter.transition()
